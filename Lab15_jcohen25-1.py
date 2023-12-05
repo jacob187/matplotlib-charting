@@ -5,33 +5,34 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 
 
-path = Path("OHUR.csv")
+path = Path("us_treasury_yields_daily.csv")
 lines = path.read_text().splitlines()
 
 csv_reader = csv.reader(lines)
 header_row = next(csv_reader)
 
-# Extract dates, and high and low temperatures.
-dates, unemployment_rates = [], []
+# Extract dates, the one year yields, and twenty year yields.
+dates, us_one_year_yields, us_twenty_year_yields = [], [], []
 for row in csv_reader:
     current_date = datetime.strptime(row[0], "%Y-%m-%d")
+    one_year = float(row[4]) if row[4] else None
+    twenty_year = float(row[10]) if row[10] else None
     dates.append(current_date)
-    unemployment_rates.append(float(row[1]))
+    us_one_year_yields.append(one_year)
 
-print(dates)
-# Plot the high and low temperatures.
+    us_twenty_year_yields.append(twenty_year)
 
+# Plot the one year and twenty year yields
 plt.style.use("seaborn-v0_8")
 fig, ax = plt.subplots()
-ax.plot(dates, unemployment_rates, color="red", alpha=0.5)
-# ax.plot(dates, lows, color="blue", alpha=0.5)
-# ax.fill_between(dates, ohur, facecolor="blue", alpha=0.1)
+ax.plot(dates, us_one_year_yields, color="blue")
+ax.plot(dates, us_twenty_year_yields, color="orange")
 
 # Format plot.
-ax.set_title("Ohio Unemployment Rate since 1975", fontsize=24)
+ax.set_title("United States One-Year and Twenty-Year Treasury Bill", fontsize=18)
 ax.set_xlabel("", fontsize=16)
 fig.autofmt_xdate()
-ax.set_ylabel("Unemployment Rate (%)", fontsize=16)
+ax.set_ylabel("Return (%)", fontsize=16)
 ax.tick_params(labelsize=16)
 
 plt.show()
